@@ -1,0 +1,28 @@
+---
+api:
+  local:
+    port: 5000
+    debug: True
+  dev:
+    port: 5000
+    debug: True
+  prod:
+    port: 80
+    debug: False
+
+core:
+  local:
+    db_redis:
+      host: 
+      port: 
+    debug: True
+  dev:
+    db_redis:
+      host: 
+      port: 
+    debug: True
+  prod:
+    db_redis:
+      host: 
+      port: 
+    debug: False
