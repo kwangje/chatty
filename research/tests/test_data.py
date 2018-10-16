@@ -1,4 +1,4 @@
-from .data import daily_dialogue
+from research.data import daily_dialogue
 
 
 def test_daily_dialogue_data():

@@ -3,6 +3,13 @@ import pandas as pd
 from sklearn.model_selection import StratifiedKFold
 
 
+def _make_train_test_split(df, test_size=1000):
+    conv_ids = df['conv_id'].unique()
+    test_indices = np.random.choice(conv_ids, size=test_size, replace=False)
+    train_indices = np.setdiff1d(conv_ids, test_indices)
+    return df[df['conv_id'].isin(train_indices)], df[df['conv_id'].isin(test_indices)]
+
+
 def cv_stratified_shuffle(X: np.array,
                           y: np.array,
                           model,
