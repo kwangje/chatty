@@ -43,6 +43,25 @@ def test_pos():
     assert output == expected
 
 
+def test_dep():
+    expected = [
+        '<DEP>_',
+        '<DEP>_attr',
+        '<DEP>_ROOT',
+        '<DEP>_det',
+        '<DEP>_nsubj',
+        '<DEP>_prep',
+        '<DEP>_nmod',
+        '<DEP>_punct',
+        '<DEP>_pobj',
+        '<DEP>_pobj',
+        '<DEP>_punct'
+    ]
+    tokenizer = tokens.dep()
+    output = tokenizer(doc)
+    assert output == expected
+
+
 def test_ngramize_pos():
     expected = [
         '<POS>_SPACE_<POS>_NOUN',

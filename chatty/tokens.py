@@ -27,6 +27,17 @@ def pos(sep='_', tag='<POS>'):
     return inner
 
 
+def dep(sep='_', tag='<DEP>'):
+    "dependency"
+    def inner(doc: spacy.tokens.doc.Doc):
+        tokens = []
+        for tok in doc:
+            tagged = sep.join((tag, tok.dep_))
+            tokens.append(tagged)
+        return tokens
+    return inner
+
+
 def word(sep='_', tag='<WORD>', lower=True):
     "word tokens"
     def inner(doc: spacy.tokens.doc.Doc):

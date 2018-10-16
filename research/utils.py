@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.model_selection import StratifiedKFold
 
 
-def _make_train_test_split(df, test_size=1000):
+def train_test_split(df, test_size=1000):
     conv_ids = df['conv_id'].unique()
     test_indices = np.random.choice(conv_ids, size=test_size, replace=False)
     train_indices = np.setdiff1d(conv_ids, test_indices)
