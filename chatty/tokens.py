@@ -43,25 +43,28 @@ def chain(tokenizers=[], sep='_'):
     return inner
 
 
-def ngramize(tokens, ngrams=[1], sep='_'):
-    "convert an output of tokens into an ngramized version of it"
-    output = []
-    for ngram_size in ngrams:
-        for i in range(ngram_size, len(tokens) + 1):
-            output.append(sep.join(tokens[i - ngram_size: i]))
-    return output
+def ngramize(tokenizer, ngrams=[1], sep='_'):
+    def inner(doc: spacy.tokens.doc.Doc):
+        "convert an output of tokens into an ngramized version of it"
+        tokens = tokenizer(doc)
+        output = []
+        for ngram_size in ngrams:
+            for i in range(ngram_size, len(tokens) + 1):
+                output.append(sep.join(tokens[i - ngram_size: i]))
+        return output
+    return inner
 
 
-def tokenize(string: str, tokenizers=[], sep='_'):
+def tokenize(string: str, tokenizers=[]):
     "all tokenizers come through here"
     doc = nlp(string)
     tokens = []
     for tokenizer in tokenizers:
-        for token in tokenizer(doc, sep=sep):
+        for token in tokenizer(doc):
             tokens.append(token)
     return tokens
 
 
-def build(tokenizers=[], sep='_'):
-    tokenizer = partial(tokenize, tokenizers=tokenizers, sep=sep)
+def build(tokenizers=[]):
+    tokenizer = partial(tokenize, tokenizers=tokenizers)
     return tokenizer

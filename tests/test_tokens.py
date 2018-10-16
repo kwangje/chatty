@@ -54,7 +54,8 @@ def test_ngramize_pos():
         '<POS>_NOUN_<POS>_NOUN',
         '<POS>_NOUN_<POS>_PUNCT'
     ]
-    output = tokens.ngramize(tokens.pos(doc), [2])
+    tokenizer = tokens.ngramize(tokens.pos, [2])
+    output = tokenizer(doc)
     assert output == expected
 
 
