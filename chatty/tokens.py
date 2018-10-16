@@ -32,7 +32,7 @@ def word(doc: spacy.tokens.doc.Doc, sep='_', tag='<WORD>', lower=True):
 
 
 def chain(doc: spacy.tokens.doc.Doc, tokenizers=[], sep='_'):
-    "for pulling out multiple features per token"
+    "for pulling out multiple kinds of features per token"
     each_tokenized = []
     for tokenize in tokenizers:
         tokenized = tokenize(doc)
