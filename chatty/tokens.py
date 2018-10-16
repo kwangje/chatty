@@ -1,3 +1,4 @@
+from functools import partial
 import spacy
 
 
@@ -31,13 +32,15 @@ def word(doc: spacy.tokens.doc.Doc, sep='_', tag='<WORD>', lower=True):
     return tokens
 
 
-def chain(doc: spacy.tokens.doc.Doc, tokenizers=[], sep='_'):
+def chain(tokenizers=[], sep='_'):
     "for pulling out multiple kinds of features per token"
-    each_tokenized = []
-    for tokenize in tokenizers:
-        tokenized = tokenize(doc)
-        each_tokenized.append(tokenized)
-    return [sep.join(i) for i in zip(*each_tokenized)]
+    def inner(doc: spacy.tokens.doc.Doc):
+        each_tokenized = []
+        for tokenize in tokenizers:
+            tokenized = tokenize(doc)
+            each_tokenized.append(tokenized)
+        return [sep.join(i) for i in zip(*each_tokenized)]
+    return inner
 
 
 def ngramize(tokens, ngrams=[1], sep='_'):
@@ -57,3 +60,8 @@ def tokenize(string: str, tokenizers=[], sep='_'):
         for token in tokenizer(doc, sep=sep):
             tokens.append(token)
     return tokens
+
+
+def build(tokenizers=[], sep='_'):
+    tokenizer = partial(tokenize, tokenizers=tokenizers, sep=sep)
+    return tokenizer
