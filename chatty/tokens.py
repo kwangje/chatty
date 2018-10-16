@@ -5,31 +5,37 @@ import spacy
 nlp = spacy.load('en_core_web_sm')
 
 
-def lemma(doc: spacy.tokens.doc.Doc, sep='_', tag='<LEMMA>'):
+def lemma(sep='_', tag='<LEMMA>'):
     "lemmas"
-    tokens = []
-    for tok in doc:
-        tagged = sep.join((tag, tok.lemma_))
-        tokens.append(tagged)
-    return tokens
+    def inner(doc: spacy.tokens.doc.Doc):
+        tokens = []
+        for tok in doc:
+            tagged = sep.join((tag, tok.lemma_))
+            tokens.append(tagged)
+        return tokens
+    return inner
 
 
-def pos(doc: spacy.tokens.doc.Doc, sep='_', tag='<POS>'):
+def pos(sep='_', tag='<POS>'):
     "parts of speech"
-    tokens = []
-    for tok in doc:
-        tagged = sep.join((tag, tok.pos_))
-        tokens.append(tagged)
-    return tokens
+    def inner(doc: spacy.tokens.doc.Doc):
+        tokens = []
+        for tok in doc:
+            tagged = sep.join((tag, tok.pos_))
+            tokens.append(tagged)
+        return tokens
+    return inner
 
 
-def word(doc: spacy.tokens.doc.Doc, sep='_', tag='<WORD>', lower=True):
+def word(sep='_', tag='<WORD>', lower=True):
     "word tokens"
-    tokens = []
-    for tok in doc:
-        tagged = sep.join((tag, tok.text.lower() if lower else tok.text))
-        tokens.append(tagged)
-    return tokens
+    def inner(doc: spacy.tokens.doc.Doc):
+        tokens = []
+        for tok in doc:
+            tagged = sep.join((tag, tok.text.lower() if lower else tok.text))
+            tokens.append(tagged)
+        return tokens
+    return inner
 
 
 def chain(tokenizers=[], sep='_'):
