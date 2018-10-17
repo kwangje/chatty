@@ -1,52 +1,44 @@
-from functools import partial
+from functools import partial, wraps
 import spacy
 
 
 nlp = spacy.load('en_core_web_sm')
 
 
-def lemma(sep='_', tag='<LEMMA>'):
-    "lemmas"
-    def inner(doc: spacy.tokens.doc.Doc):
-        tokens = []
-        for tok in doc:
-            tagged = sep.join((tag, tok.lemma_))
-            tokens.append(tagged)
-        return tokens
-    return inner
+def lazy_tag_spacy_doc(sep: str, tag: str, **kwargs):
+    def wrapper(func):
+        @wraps(func)
+        def inner(**kwargs):
+            def spacy_getter(doc: spacy.tokens.doc.Doc):
+                tokens = []
+                for tok in doc:
+                    tagged = sep.join((tag, func(tok, **kwargs)))
+                    tokens.append(tagged)
+                return tokens
+            return spacy_getter
+        return inner
+    return wrapper
 
 
-def pos(sep='_', tag='<POS>'):
-    "parts of speech"
-    def inner(doc: spacy.tokens.doc.Doc):
-        tokens = []
-        for tok in doc:
-            tagged = sep.join((tag, tok.pos_))
-            tokens.append(tagged)
-        return tokens
-    return inner
+@lazy_tag_spacy_doc(sep='_', tag='<LEMMA>')
+def lemma(tok: spacy.tokens.token.Token):
+    "get lemmas"
+    return tok.lemma_
 
 
-def dep(sep='_', tag='<DEP>'):
-    "dependency"
-    def inner(doc: spacy.tokens.doc.Doc):
-        tokens = []
-        for tok in doc:
-            tagged = sep.join((tag, tok.dep_))
-            tokens.append(tagged)
-        return tokens
-    return inner
+@lazy_tag_spacy_doc(sep='_', tag='<POS>')
+def pos(tok: spacy.tokens.token.Token):
+    return tok.pos_
 
 
-def word(sep='_', tag='<WORD>', lower=True):
-    "word tokens"
-    def inner(doc: spacy.tokens.doc.Doc):
-        tokens = []
-        for tok in doc:
-            tagged = sep.join((tag, tok.text.lower() if lower else tok.text))
-            tokens.append(tagged)
-        return tokens
-    return inner
+@lazy_tag_spacy_doc(sep='_', tag='<DEP>')
+def dep(tok: spacy.tokens.token.Token):
+    return tok.dep_
+
+
+@lazy_tag_spacy_doc(sep='_', tag='<WORD>', lower=True)
+def word(tok, lower=True):
+    return tok.text.lower() if lower else tok.text
 
 
 def chain(tokenizers=[], sep='_'):
