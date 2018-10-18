@@ -41,6 +41,13 @@ def word(tok, lower=True):
     return tok.text.lower() if lower else tok.text
 
 
+def filter_stop_word():
+    "stop word filter"
+    def inner(tok):
+        return tok.is_stop
+    return inner
+
+
 def chain(tokenizers=[], sep='_'):
     "for pulling out multiple kinds of features per token"
     def inner(doc: spacy.tokens.doc.Doc):
@@ -64,7 +71,7 @@ def ngramize(tokenizer, ngrams=[1], sep='_'):
     return inner
 
 
-def tokenize(string: str, tokenizers=[]):
+def tokenize(string: str, tokenizers=[], filters=[]):
     "all tokenizers come through here"
     doc = nlp(string)
     tokens = []
@@ -74,6 +81,6 @@ def tokenize(string: str, tokenizers=[]):
     return tokens
 
 
-def build(tokenizers=[]):
-    tokenizer = partial(tokenize, tokenizers=tokenizers)
+def build(tokenizers=[], filters=[]):
+    tokenizer = partial(tokenize, tokenizers=tokenizers, filters=filters)
     return tokenizer
